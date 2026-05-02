@@ -4,7 +4,7 @@ A full-stack MERN Developer Q&A platform with AI-powered moderation and automate
 
 ## Demo
 
-Live URL: 
+Live URL: https://codequery-app.netlify.app/
 
 ## Preview
 
