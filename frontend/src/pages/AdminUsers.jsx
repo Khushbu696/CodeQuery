@@ -11,7 +11,7 @@ const AdminUsers = () => {
     const fetchUsers = async () => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/admin/users', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/users`, config);
             setUsers(data);
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -28,7 +28,7 @@ const AdminUsers = () => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             const endpoint = isBlocked ? 'unblock' : 'block';
-            await axios.patch(`http://localhost:5000/api/admin/users/${userId}/${endpoint}`, {}, config);
+            await axios.patch(`${import.meta.env.VITE_API_URL}/api/admin/users/${userId}/${endpoint}`, {}, config);
             fetchUsers();
         } catch (error) {
             alert('Failed to update user status');

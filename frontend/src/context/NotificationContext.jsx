@@ -13,7 +13,7 @@ export const NotificationProvider = ({ children }) => {
         if (!user) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/notifications', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/notifications`, config);
             setNotifications(data);
             setUnreadCount(data.filter(n => !n.isRead).length);
         } catch (error) {
@@ -35,7 +35,7 @@ export const NotificationProvider = ({ children }) => {
     const markAsRead = async (id) => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.patch(`http://localhost:5000/api/notifications/${id}/read`, {}, config);
+            await axios.patch(`${import.meta.env.VITE_API_URL}/api/notifications/${id}/read`, {}, config);
             fetchNotifications();
         } catch (error) {
             console.error('Error marking notification as read:', error);

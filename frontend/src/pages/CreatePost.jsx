@@ -42,7 +42,7 @@ const CreatePost = () => {
                 images: images.filter(img => img.trim())
             };
 
-            await axios.post('http://localhost:5000/api/posts', postData, config);
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/posts`, postData, config);
             navigate('/');
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to create post. It might have been flagged by AI.');

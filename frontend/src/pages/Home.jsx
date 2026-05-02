@@ -17,8 +17,8 @@ const Home = () => {
         setLoading(true);
         try {
             const url = query 
-                ? `http://localhost:5000/api/search?q=${query}&page=${page}`
-                : `http://localhost:5000/api/posts?page=${page}&sort=${sort}`;
+                ? `${import.meta.env.VITE_API_URL}/api/search?q=${query}&page=${page}`
+                : `${import.meta.env.VITE_API_URL}/api/posts?page=${page}&sort=${sort}`;
             
             const { data } = await axios.get(url);
             setPosts(data.posts);

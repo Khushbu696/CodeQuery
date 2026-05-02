@@ -16,8 +16,8 @@ const PostDetail = () => {
 
     const fetchData = async () => {
         try {
-            const postRes = await axios.get(`http://localhost:5000/api/posts/${id}`);
-            const repliesRes = await axios.get(`http://localhost:5000/api/posts/${id}/replies`);
+            const postRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}`);
+            const repliesRes = await axios.get(`${import.meta.env.VITE_API_URL}/api/posts/${id}/replies`);
             setPost(postRes.data);
             setReplies(repliesRes.data);
         } catch (error) {
@@ -39,7 +39,7 @@ const PostDetail = () => {
         setError('');
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.post(`http://localhost:5000/api/posts/${id}/replies`, { content: replyContent }, config);
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/posts/${id}/replies`, { content: replyContent }, config);
             setReplyContent('');
             fetchData();
         } catch (err) {

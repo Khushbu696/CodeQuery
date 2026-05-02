@@ -11,7 +11,7 @@ const AdminSpam = () => {
     const fetchFlags = async () => {
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            const { data } = await axios.get('http://localhost:5000/api/admin/flagged', config);
+            const { data } = await axios.get(`${import.meta.env.VITE_API_URL}/api/admin/flagged`, config);
             setFlags(data);
         } catch (error) {
             console.error('Error fetching flags:', error);
@@ -28,7 +28,7 @@ const AdminSpam = () => {
         if (!window.confirm(`Are you sure you want to delete this ${type}?`)) return;
         try {
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
-            await axios.delete(`http://localhost:5000/api/admin/content/${type.toLowerCase()}/${id}`, config);
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/admin/content/${type.toLowerCase()}/${id}`, config);
             fetchFlags();
         } catch (error) {
             alert('Delete failed');
