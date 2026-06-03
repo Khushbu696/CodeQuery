@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { MessageSquare, Eye, Clock, Share2, CornerDownRight, AlertTriangle } from 'lucide-react';
+import { MessageSquare, Eye, Clock, Share2, CornerDownRight, AlertTriangle, Trash2 } from 'lucide-react';
 
 const PostDetail = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const { user } = useAuth();
     const [post, setPost] = useState(null);
     const [replies, setReplies] = useState([]);
@@ -49,17 +50,50 @@ const PostDetail = () => {
         }
     };
 
+    const handleDeletePost = async () => {
+        if (!window.confirm('Are you sure you want to delete this question?')) return;
+        try {
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/posts/${id}`, config);
+            navigate('/');
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to delete the question.');
+        }
+    };
+
+    const handleDeleteReply = async (replyId) => {
+        if (!window.confirm('Are you sure you want to delete this answer?')) return;
+        try {
+            const config = { headers: { Authorization: `Bearer ${user.token}` } };
+            await axios.delete(`${import.meta.env.VITE_API_URL}/api/replies/${replyId}`, config);
+            fetchData();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to delete the answer.');
+        }
+    };
+
     if (loading) return <div style={{ textAlign: 'center', padding: '5rem' }}>Loading question...</div>;
     if (!post) return <div style={{ textAlign: 'center', padding: '5rem' }}>Question not found.</div>;
 
     return (
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-            <header style={{ marginBottom: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem' }}>
-                <h1 style={{ fontSize: '2.25rem', marginBottom: '1rem', lineHeight: 1.2 }}>{post.title}</h1>
-                <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Clock size={16} /> Asked {new Date(post.createdAt).toLocaleDateString()}</span>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Eye size={16} /> Viewed {post.viewCount} times</span>
+            <header style={{ marginBottom: '2rem', borderBottom: '1px solid var(--border)', paddingBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap' }}>
+                <div style={{ flex: 1, minWidth: '280px' }}>
+                    <h1 style={{ fontSize: '2.25rem', marginBottom: '1rem', lineHeight: 1.2 }}>{post.title}</h1>
+                    <div style={{ display: 'flex', gap: '1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Clock size={16} /> Asked {new Date(post.createdAt).toLocaleDateString()}</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}><Eye size={16} /> Viewed {post.viewCount} times</span>
+                    </div>
                 </div>
+                {user && (post.author?._id === user._id || user.role === 'admin') && (
+                    <button 
+                        onClick={handleDeletePost} 
+                        className="btn btn-danger" 
+                        style={{ padding: '0.6rem 1.2rem', display: 'inline-flex', alignItems: 'center', gap: '0.5rem', whiteSpace: 'nowrap', marginTop: '0.5rem' }}
+                    >
+                        <Trash2 size={16} /> Delete Question
+                    </button>
+                )}
             </header>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
@@ -112,9 +146,20 @@ const PostDetail = () => {
                                     </div>
                                     <div style={{ flex: 1 }}>
                                         <div style={{ fontSize: '1rem', lineHeight: 1.5, marginBottom: '1rem' }}>{reply.content}</div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-muted)' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.85rem', color: 'var(--text-muted)', flexWrap: 'wrap', gap: '0.5rem' }}>
                                             <span>Answered {new Date(reply.createdAt).toLocaleString()}</span>
-                                            <span style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{reply.author?.username}</span>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                                {user && (reply.author?._id === user._id || user.role === 'admin') && (
+                                                    <button 
+                                                        onClick={() => handleDeleteReply(reply._id)} 
+                                                        className="btn btn-danger" 
+                                                        style={{ padding: '0.3rem 0.6rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'transparent', border: '1px solid var(--danger)', color: 'var(--danger)' }}
+                                                    >
+                                                        <Trash2 size={12} /> Delete
+                                                    </button>
+                                                )}
+                                                <span style={{ fontWeight: 'bold', color: 'var(--primary)' }}>{reply.author?.username}</span>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
