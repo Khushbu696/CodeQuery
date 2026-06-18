@@ -2,9 +2,22 @@
 
 A full-stack MERN Developer Q&A platform with AI-powered moderation and automated abuse control, designed to simulate real-world community systems like Stack Overflow.
 
-## Demo
+## Links
 
-Live URL: https://codequery-app.netlify.app/
+1. Live URL:
+```text
+https://codequery-app.netlify.app/
+```
+
+2. Youtube Demo Video:
+```text
+https://www.youtube.com/watch?v=lrIF9ft01cU&feature=youtu.be
+```
+
+3. API Documentation (Postman):
+```text
+https://documenter.getpostman.com/view/39216679/2sBXwnsrid
+```
 
 ## Preview
 
